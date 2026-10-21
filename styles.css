@@ -1,0 +1,618 @@
+/* ==========================================================================
+   Tic-Tac-Toe — Thoughtfully Crafted Indie Game Styles
+   Deliberate, restrained, and authentic UI design. Pure Vanilla CSS.
+   ========================================================================== */
+
+/* Design Tokens */
+:root {
+  /* Surface & Base Palette */
+  --bg-page: #0d0f12;
+  --bg-surface: #13161c;
+  --bg-cell: #171a21;
+  --bg-cell-hover: #1e222b;
+  --bg-cell-active: #15181f;
+
+  /* Structural Dividers */
+  --border-line: #242933;
+  --border-subtle: #1c2028;
+  --border-focus: #3b82f6;
+
+  /* Strategic Accent Colors */
+  --color-x: #e04e39;
+  --color-x-soft: rgba(224, 78, 57, 0.12);
+
+  --color-o: #257cd6;
+  --color-o-soft: rgba(37, 124, 214, 0.12);
+
+  --color-win: #22a06b;
+  --color-win-soft: rgba(34, 160, 107, 0.14);
+
+  --color-draw: #b8862d;
+  --color-draw-soft: rgba(184, 134, 45, 0.12);
+
+  /* Typography Colors */
+  --text-primary: #eceef2;
+  --text-secondary: #8c93a0;
+  --text-muted: #575e6b;
+
+  /* Typography Configuration */
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  
+  /* Radii */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+
+  /* Transitions */
+  --ease-fast: 140ms cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-normal: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Reset & Global Standards */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  line-height: 1.45;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem 1rem;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Screen Reader Utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* App Container */
+.game-wrapper {
+  width: 100%;
+  max-width: 380px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* 1. Header / Top Bar */
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 0.25rem;
+}
+
+.title-group {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.game-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.game-tag {
+  font-size: 0.725rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.utility-btn {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-line);
+  border-radius: var(--radius-md);
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--ease-fast);
+}
+
+.utility-btn:hover {
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  border-color: #363c48;
+}
+
+.utility-btn:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+.utility-btn.muted .sound-icon-on {
+  display: none;
+}
+
+.utility-btn:not(.muted) .sound-icon-off {
+  display: none;
+}
+
+/* 2. Settings Bar (Mode & Difficulty Switchers) */
+.settings-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.setting-selector {
+  display: flex;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-line);
+  border-radius: var(--radius-md);
+  padding: 2px;
+  gap: 2px;
+}
+
+.tab-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem 0.5rem;
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--ease-fast);
+  white-space: nowrap;
+}
+
+.tab-btn:hover:not(.active) {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.tab-btn.active {
+  background: var(--bg-cell);
+  color: var(--text-primary);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+
+.tab-btn:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 1px;
+}
+
+/* 3. Turn Status Bar */
+.status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.75rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-line);
+  border-radius: var(--radius-md);
+  transition: border-color var(--ease-fast);
+}
+
+.status-indicator {
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.status-bar[data-turn="X"] .status-indicator {
+  background: var(--color-x-soft);
+  color: var(--color-x);
+}
+
+.status-bar[data-turn="O"] .status-indicator {
+  background: var(--color-o-soft);
+  color: var(--color-o);
+}
+
+.status-bar[data-turn="win"] .status-indicator {
+  background: var(--color-win-soft);
+  color: var(--color-win);
+}
+
+.status-bar[data-turn="draw"] .status-indicator {
+  background: var(--color-draw-soft);
+  color: var(--color-draw);
+}
+
+.status-text {
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+/* 4. Unified Grid Board */
+.board-area {
+  position: relative;
+  width: 100%;
+}
+
+.grid-board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 2px;
+  background-color: var(--border-line);
+  border: 2px solid var(--border-line);
+  border-radius: var(--radius-lg);
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  outline: none;
+}
+
+.grid-board:focus-visible {
+  box-shadow: 0 0 0 2px var(--border-focus);
+}
+
+/* Individual Cell Button */
+.board-cell {
+  position: relative;
+  background-color: var(--bg-cell);
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+  transition: background-color var(--ease-fast);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.board-cell:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: -2px;
+  z-index: 2;
+}
+
+/* Desktop hover feedback */
+@media (hover: hover) and (pointer: fine) {
+  .board-cell:hover:not([disabled]):not(.cell-marked) {
+    background-color: var(--bg-cell-hover);
+  }
+
+  /* Ghost indicator of upcoming mark */
+  .board-cell:hover:not([disabled]):not(.cell-marked)::after {
+    opacity: 0.18;
+    transform: scale(0.9);
+  }
+
+  body[data-current-turn="X"] .board-cell:hover:not([disabled]):not(.cell-marked)::after {
+    content: "✕";
+    font-size: clamp(2.2rem, 12vw, 3.2rem);
+    font-weight: 800;
+    color: var(--color-x);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  body[data-current-turn="O"] .board-cell:hover:not([disabled]):not(.cell-marked)::after {
+    content: "○";
+    font-size: clamp(2.6rem, 14vw, 3.8rem);
+    font-weight: 800;
+    color: var(--color-o);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.board-cell:active:not([disabled]) {
+  background-color: var(--bg-cell-active);
+}
+
+.board-cell[disabled] {
+  cursor: default;
+}
+
+/* Placed Mark Graphics */
+.cell-mark {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cell-mark svg {
+  width: 56%;
+  height: 56%;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cell-mark.mark-x svg {
+  stroke: var(--color-x);
+  stroke-width: 12;
+}
+
+.cell-mark.mark-o svg {
+  stroke: var(--color-o);
+  stroke-width: 11;
+  fill: none;
+}
+
+/* Winning Cell Highlight */
+.board-cell.cell-winning {
+  background-color: var(--color-win-soft);
+}
+
+.board-cell.cell-winning .cell-mark.mark-x svg,
+.board-cell.cell-winning .cell-mark.mark-o svg {
+  stroke: var(--color-win);
+}
+
+/* Strike Overlay */
+.strike-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 5;
+  display: none;
+}
+
+.strike-overlay.active {
+  display: block;
+}
+
+#strike-line {
+  stroke: var(--color-win);
+  stroke-width: 7;
+  stroke-linecap: round;
+  stroke-dasharray: 450;
+  stroke-dashoffset: 450;
+  animation: drawStrike 280ms ease-out forwards;
+}
+
+/* 5. Result Bar */
+.result-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 0.85rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-line);
+  border-radius: var(--radius-md);
+  gap: 0.5rem;
+}
+
+.result-info {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.result-badge {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-win);
+}
+
+.result-msg {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: #1e3a8a;
+  color: #eff6ff;
+  border: 1px solid #2563eb;
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--ease-fast);
+  white-space: nowrap;
+}
+
+.action-btn:hover {
+  background: #2563eb;
+}
+
+.action-btn:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+/* 6. Scoreboard */
+.scoreboard {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto 1fr;
+  align-items: center;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-line);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 0.5rem;
+}
+
+.score-metric {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  text-align: center;
+}
+
+.score-label {
+  font-size: 0.725rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.score-digits {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.score-divider {
+  width: 1px;
+  height: 28px;
+  background-color: var(--border-line);
+}
+
+/* 7. Footer & Utility Controls */
+.app-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+  text-align: center;
+  padding: 0.25rem 0 0.5rem;
+}
+
+.link-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color var(--ease-fast);
+}
+
+.link-btn:hover {
+  color: var(--text-primary);
+}
+
+.link-btn:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+.info-notes {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.info-notes kbd {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-line);
+  border-radius: 3px;
+  padding: 1px 4px;
+  font-family: inherit;
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+
+/* Keyframes */
+@keyframes drawStrike {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Reduced Motion Override */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  #strike-line {
+    stroke-dashoffset: 0 !important;
+  }
+}
+
+/* Viewport Adjustments */
+@media (max-width: 360px) {
+  body {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .game-wrapper {
+    gap: 0.75rem;
+  }
+
+  .game-title {
+    font-size: 1.15rem;
+  }
+
+  .tab-btn {
+    font-size: 0.75rem;
+    padding: 0.35rem;
+  }
+
+  .score-digits {
+    font-size: 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+  body {
+    padding: 2rem 1rem;
+  }
+
+  .game-wrapper {
+    max-width: 400px;
+    gap: 1.15rem;
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "tic-tac-toe",
+  "version": "1.0.0",
+  "description": "A polished, responsive, and accessible Tic-Tac-Toe web game built with Vanilla JavaScript, HTML, and CSS.",
+  "scripts": {
+    "start": "python3 -m http.server 8000",
+    "test": "node tests/game-test.js"
+  },
+  "keywords": [
+    "tic-tac-toe",
+    "javascript",
+    "game",
+    "minimax",
+    "vanilla-js",
+    "codedex",
+    "accessible",
+    "responsive"
+  ],
+  "author": "Banka Lakshmi Chaitanya Ram",
+  "license": "MIT"
+}

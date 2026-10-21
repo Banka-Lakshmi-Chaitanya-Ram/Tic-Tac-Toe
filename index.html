@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Tic-Tac-Toe</title>
+  <meta name="description" content="A classic two-player strategy game. Play locally with a friend or challenge the computer across three difficulty levels.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Accessible Live Region for Screen Readers -->
+  <div id="game-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+  <div class="game-wrapper">
+    <!-- Top Bar: Title & Controls -->
+    <header class="top-bar">
+      <div class="title-group">
+        <h1 class="game-title">Tic-Tac-Toe</h1>
+        <span class="game-tag">Classic 3×3</span>
+      </div>
+
+      <div class="top-actions">
+        <button id="sound-toggle-btn" class="utility-btn" aria-label="Toggle Sound" title="Toggle Sound">
+          <svg class="sound-icon-on" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          </svg>
+          <svg class="sound-icon-off" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <line x1="23" y1="9" x2="17" y2="15"></line>
+            <line x1="17" y1="9" x2="23" y2="15"></line>
+          </svg>
+        </button>
+
+        <button id="restart-round-btn" class="utility-btn" aria-label="Restart round" title="Restart round">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+            <path d="M3 3v5h5"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Game Settings Navigation -->
+    <nav class="settings-bar" aria-label="Game Mode and Difficulty Selection">
+      <div class="setting-selector" role="radiogroup" aria-label="Opponent Mode">
+        <button type="button" class="tab-btn active" role="radio" aria-checked="true" data-mode="pvp" id="mode-pvp">
+          Pass &amp; Play
+        </button>
+        <button type="button" class="tab-btn" role="radio" aria-checked="false" data-mode="ai" id="mode-ai">
+          vs Computer
+        </button>
+      </div>
+
+      <div class="setting-selector difficulty-selector" id="difficulty-group" role="radiogroup" aria-label="Computer Difficulty" hidden>
+        <button type="button" class="tab-btn" role="radio" aria-checked="false" data-difficulty="easy" id="diff-easy">
+          Easy
+        </button>
+        <button type="button" class="tab-btn active" role="radio" aria-checked="true" data-difficulty="medium" id="diff-medium">
+          Medium
+        </button>
+        <button type="button" class="tab-btn" role="radio" aria-checked="false" data-difficulty="hard" id="diff-hard">
+          Hard
+        </button>
+      </div>
+    </nav>
+
+    <!-- Turn Status Bar -->
+    <div class="status-bar" id="player-turn-badge" data-turn="X">
+      <div class="status-indicator" id="turn-mark" aria-hidden="true">✕</div>
+      <div class="status-text" id="status-message">Player X to move</div>
+    </div>
+
+    <!-- Main Game Board Field -->
+    <main class="board-area">
+      <div class="grid-board" id="board" role="grid" aria-label="Tic-Tac-Toe Board" tabindex="0">
+        <button type="button" class="board-cell" role="gridcell" data-index="0" id="cell-0" aria-label="Square 1, empty"></button>
+        <button type="button" class="board-cell" role="gridcell" data-index="1" id="cell-1" aria-label="Square 2, empty"></button>
+        <button type="button" class="board-cell" role="gridcell" data-index="2" id="cell-2" aria-label="Square 3, empty"></button>
+        <button type="button" class="board-cell" role="gridcell" data-index="3" id="cell-3" aria-label="Square 4, empty"></button>
+        <button type="button" class="board-cell" role="gridcell" data-index="4" id="cell-4" aria-label="Square 5, empty"></button>
+        <button type="button" class="board-cell" role="gridcell" data-index="5" id="cell-5" aria-label="Square 6, empty"></button>
+        <button type="button" class="board-cell" role="gridcell" data-index="6" id="cell-6" aria-label="Square 7, empty"></button>
+        <button type="button" class="board-cell" role="gridcell" data-index="7" id="cell-7" aria-label="Square 8, empty"></button>
+        <button type="button" class="board-cell" role="gridcell" data-index="8" id="cell-8" aria-label="Square 9, empty"></button>
+      </div>
+
+      <!-- Winning Strike Vector Overlay -->
+      <svg class="strike-overlay" id="strike-overlay" viewBox="0 0 300 300" aria-hidden="true">
+        <line id="strike-line" x1="0" y1="0" x2="0" y2="0" />
+      </svg>
+    </main>
+
+    <!-- Round End Action Banner -->
+    <div class="result-bar" id="result-banner" hidden>
+      <div class="result-info">
+        <span class="result-badge" id="result-icon" aria-hidden="true">✓</span>
+        <span class="result-msg" id="result-text">Player X Wins</span>
+      </div>
+      <button type="button" class="action-btn" id="play-again-btn">
+        <span>Play Next Round</span>
+        <svg viewBox="0 0 20 20" width="16" height="16" fill="currentColor" aria-hidden="true">
+          <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Match Scoreboard -->
+    <section class="scoreboard" aria-label="Match Scores">
+      <div class="score-metric">
+        <span class="score-label" id="score-label-x">Player X</span>
+        <span class="score-digits" id="score-x-val">0</span>
+      </div>
+      <div class="score-divider" aria-hidden="true"></div>
+      <div class="score-metric">
+        <span class="score-label">Draws</span>
+        <span class="score-digits" id="score-ties-val">0</span>
+      </div>
+      <div class="score-divider" aria-hidden="true"></div>
+      <div class="score-metric">
+        <span class="score-label" id="score-label-o">Player O</span>
+        <span class="score-digits" id="score-o-val">0</span>
+      </div>
+    </section>
+
+    <!-- Sub-footer Controls & Info -->
+    <footer class="app-info">
+      <button type="button" class="link-btn" id="reset-scores-btn" aria-label="Reset recorded scores">
+        Reset match scores
+      </button>
+      <div class="info-notes">
+        <span>Keyboard: <kbd>Arrows</kbd> / <kbd>Tab</kbd> to move · <kbd>Space</kbd> to place · <kbd>R</kbd> to restart</span>
+      </div>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
